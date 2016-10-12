@@ -1,0 +1,2 @@
+/usr/bin/ar cr libraytracerlib.a  CMakeFiles/raytracerlib.dir/InputReader.cpp.o CMakeFiles/raytracerlib.dir/Waxpby.cpp.o CMakeFiles/raytracerlib.dir/CrossProduct.cpp.o CMakeFiles/raytracerlib.dir/Norm.cpp.o CMakeFiles/raytracerlib.dir/Normalize.cpp.o CMakeFiles/raytracerlib.dir/Qppax.cpp.o CMakeFiles/raytracerlib.dir/Vpmq.cpp.o CMakeFiles/raytracerlib.dir/SphereCollision.cpp.o CMakeFiles/raytracerlib.dir/ValidityChecker.cpp.o CMakeFiles/raytracerlib.dir/DotProduct.cpp.o CMakeFiles/raytracerlib.dir/Phong.cpp.o
+/usr/bin/ranlib libraytracerlib.a

@@ -1,0 +1,1 @@
+g++   -std=c++11    CMakeFiles/RayTracer.exe.dir/main.cpp.o  -o RayTracer.exe -rdynamic libraytracerlib.a 
