@@ -3,13 +3,12 @@
 
 #include "Point.hpp"
 
-struct Vector_Struct{
+class Vector{
+    public:
     double dx;
     double dy;
     double dz;
 };
-
-typedef struct Vector_Struct Vector;
 
 inline void copyVector(Vector src, Vector & dest){
     dest.dx = src.dx;

@@ -1,12 +1,12 @@
 #ifndef POINT_HPP
 #define POINT_HPP
 
-struct Point_Struct{
+class Point{
+    public:
     double x;
     double y;
     double z;
-}; 
-typedef struct Point_Struct Point;
+};
 
 inline void copyPoint(Point src, Point & dest){
     dest.x = src.x;

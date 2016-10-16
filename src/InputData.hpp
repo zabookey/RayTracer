@@ -6,9 +6,11 @@
 #include "Color.hpp"
 #include "Sphere.hpp"
 #include "Light.hpp"
+#include "Face.hpp"
 #include <vector>
 
-struct Input_Data_Struct{
+class InputData{
+    public:
     int imageWidth;
     int imageHeight;
     Point eye;
@@ -17,9 +19,9 @@ struct Input_Data_Struct{
     Vector viewdir;
     int fovv;
     std::vector<Sphere> spheres;
+    std::vector<Point> vertices;
+    std::vector<Face> faces;
     std::vector<Light> lights;
 };
-
-typedef struct Input_Data_Struct InputData;
 
 #endif
