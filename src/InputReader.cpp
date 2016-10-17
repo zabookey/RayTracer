@@ -40,63 +40,45 @@ int readInputFile(string filename, InputData& data){
 
     while(getline(inputFile, line)){
         linenum++;
+        bool error = false;
         size_t pos = line.find(delimiter);
         if(pos == string::npos)continue;
         string keyword = line.substr(0,pos);
         line.erase(0, pos+delimiter.length());
         if(keyword.compare("imsize") == 0){
-            if(!process_imsize(line, delimiter, data)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_imsize(line, delimiter, data);
             imsizeUsed = true;
         } else if(keyword.compare("fovv") == 0){
-            if(!process_fovv(line, delimiter, data)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_fovv(line,delimiter, data);
             fovvUsed = true;
         } else if(keyword.compare("eye") == 0){
-            if(!process_eye(line, delimiter, data)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_eye(line, delimiter, data);
             eyeUsed = true;
         } else if(keyword.compare("bkgcolor") == 0){
-            if(!process_bkgcolor(line, delimiter, data)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_bkgcolor(line, delimiter, data);
             bkgcolorUsed = true;
         } else if(keyword.compare("updir") == 0){
-            if(!process_updir(line, delimiter, data)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_updir(line, delimiter, data);
             updirUsed = true;
         } else if(keyword.compare("viewdir") == 0){
-            if(!process_viewdir(line, delimiter, data)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_viewdir(line, delimiter, data);
             viewdirUsed = true;
         } else if(keyword.compare("mtlcolor") == 0){
-            if(!process_mtlcolor(line, delimiter, mtlcolor, speccolor,
-                        kAmbient, kDiffuse, kSpecular, powerN)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_mtlcolor(line, delimiter, mtlcolor, speccolor,
+                    kAmbient, kDiffuse, kSpecular, powerN);
         } else if(keyword.compare("sphere") == 0){
-            if(!process_sphere(line, delimiter, data, mtlcolor, speccolor,
-                        kAmbient, kDiffuse, kSpecular, powerN)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_sphere(line, delimiter, data, mtlcolor, speccolor,
+                    kAmbient, kDiffuse, kSpecular, powerN);
         } else if(keyword.compare("light") == 0){
-            if(!process_light(line, delimiter, data)){
-                inputFile.close();
-                return linenum;
-            }
+            error = !process_light(line, delimiter, data);
+        } else if(keyword.compare("v") == 0){
+            error = !process_vertex(line, delimiter, data);
+        } else if(keyword.compare("f") == 0){
+            error = !process_face(line, delimiter, data);
+        }
+        if(error){
+            inputFile.close();
+            return linenum;
         }
     }
     inputFile.close();
@@ -703,5 +685,98 @@ bool process_light(string line, string delimiter, InputData& data){
     light.w = w;
     light.color = color;
     data.lights.push_back(light);
+    return true;
+}
+
+// Process the line that contains the token v
+// Reads in the point for the vertex and adds it to the vertex array
+bool process_vertex(string line, string delimiter, InputData& data){
+    double x, y, z;
+    size_t pos = line.find(delimiter);
+    // eye has 0 or 1 tokens so fail
+    if(pos == string::npos){
+        return false;
+    }
+    string token = line.substr(0,pos);
+    try{
+        x = stod(token, NULL);
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0, pos+delimiter.length());
+    pos = line.find(delimiter);
+    // eye has 1 or 2 tokens so fail
+    if(pos == string::npos){
+        return false;
+    }
+    token = line.substr(0,pos);
+    try{
+        y = stod(token, NULL);
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0,pos+delimiter.length());
+    pos = line.find(delimiter);
+    try{
+        if(pos == string::npos)
+            z = stod(line, NULL);
+        else{
+            token = line.substr(0,pos);
+            z = stod(token, NULL);
+        }
+    } catch (invalid_argument& e){
+        return false;
+    }
+    data.vertices.push_back(Point(x,y,z));
+    return true;
+}
+
+// Process the line that contains the token f
+// Reads in the vertices from the vertex array and creates the appropriate face.
+// Adds the face to the face array
+bool process_face(string line, string delimiter, InputData& data){
+    int v1, v2, v3;
+    size_t pos = line.find(delimiter);
+    // eye has 0 or 1 tokens so fail
+    if(pos == string::npos){
+        return false;
+    }
+    string token = line.substr(0,pos);
+    try{
+        v1 = stoi(token, NULL);
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0, pos+delimiter.length());
+    pos = line.find(delimiter);
+    // eye has 1 or 2 tokens so fail
+    if(pos == string::npos){
+        return false;
+    }
+    token = line.substr(0,pos);
+    try{
+        v2 = stoi(token, NULL);
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0,pos+delimiter.length());
+    pos = line.find(delimiter);
+    try{
+        if(pos == string::npos)
+            v3 = stoi(line, NULL);
+        else{
+            token = line.substr(0,pos);
+            v3 = stoi(token, NULL);
+        }
+    } catch (invalid_argument& e){
+        return false;
+    }
+    int nv = data.vertices.size();
+    if(v1 < 1 || v1 > nv || v2 < 1 || v2 > nv || v3 < 1 || v3 > nv){
+        cout << "Face wants vertex that doesn't exist yet." << endl;
+        return false;
+    }
+    data.faces.push_back(Face(data.vertices[v1-1], data.vertices[v2-1],
+                data.vertices[v3-1]));
     return true;
 }

@@ -38,4 +38,8 @@ bool process_sphere(std::string line, std::string delimiter, InputData& data, Co
         int& powerN);
 
 bool process_light(std::string line, std::string delimiter, InputData& data);
+
+bool process_vertex(std::string line, std::string delimiter, InputData& data);
+
+bool process_face(std::string line, std::string delimiter, InputData& data);
 #endif
