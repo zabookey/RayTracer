@@ -52,7 +52,7 @@ int main(int argc, char** argv){
     Vector viewdir = inputdata.viewdir;
     Point eye = inputdata.eye;
     int fovv = inputdata.fovv;
-    vector<Sphere> spheres = inputdata.spheres;
+    vector<Object*> objects = inputdata.objects;
     Color bkgcolor = inputdata.bkgcolor;
     // Create the array to store the colors
     Color ** pixelMap = new Color*[imageWidth];
@@ -112,30 +112,30 @@ int main(int argc, char** argv){
             // Create the ray from eye to target
             Ray r;
             initRay(r, eye, target);
-            // Witchcraft to determine if the ray hits a sphere
-            // Use pointer to determine which sphere is the current closest
-            Sphere * nearest = 0;
+            // Witchcraft to determine if the ray hits a object
+            // Use pointer to determine which object is the current closest
+            Object * nearest = 0;
             double nearestDist = DBL_MAX;
-            // Cycle through the spheres and determine the collision
+            // Cycle through the objects and determine the collision
             // Determine how far the ray travels for the collision
-            for(int i = 0; i < spheres.size(); i++){
-                double t = spheres[i].collision(r);
-                //double t = sphereCollision(r, spheres[i]);
+            for(int i = 0; i < objects.size(); i++){
+                double t = objects[i]->collision(r);
+                //double t = sphereCollision(r, objects[i]);
                 if(t >= 0){
                     // If this t is closer than the previous t
-                    // change the nearestDist and and point to this sphere
+                    // change the nearestDist and and point to this object
                     if(t < nearestDist){
                         nearestDist = t;
-                        nearest = &spheres[i];
+                        nearest = objects[i];
                     }
                 }
             }
-            // Check if a sphere was hit. If so color it with sphere color
+            // Check if a object was hit. If so color it with object color
             // If not color pixel with bkgcolor
             if(nearestDist != DBL_MAX){
                 Point intersection;
                 qppax(intersection, r.origin, nearestDist, r.direction);
-                Color c = phong(intersection, *nearest, inputdata.lights, spheres, r.direction, 50);
+                Color c = phong(intersection, nearest, inputdata.lights, objects, r.direction, 50);
                 if(c.red < 0 || c.blue < 0 || c.green < 0){
                     cout << "NEGATIVE COLOR VALUE AT [" << pixelX << "][" << pixelY << "]" << endl;
                 }
@@ -221,6 +221,9 @@ int main(int argc, char** argv){
     for(int i = 0; i < imageWidth; i++)
         delete(pixelMap[i]);
     delete(pixelMap);
+    for(int i = 0; i < objects.size(); i++)
+        delete(objects[i]);
+
 #else
     cout << "TEST ENV VARIABLE" << endl;
     Face f(Point(1, 1, 0), Point(0, 1, 1), Point(1, 0, 1));

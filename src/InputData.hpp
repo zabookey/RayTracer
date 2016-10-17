@@ -18,7 +18,7 @@ class InputData{
     Vector updir;
     Vector viewdir;
     int fovv;
-    std::vector<Sphere> spheres;
+    std::vector<Object*> objects;
     std::vector<Point> vertices;
     std::vector<Face> faces;
     std::vector<Light> lights;

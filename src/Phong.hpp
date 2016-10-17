@@ -18,7 +18,7 @@
 
 using namespace std;
 
-Color phong(Point intersection, Sphere sphere, vector<Light> lights,
-        vector<Sphere> spheres, Vector viewdir, int npower);
+Color phong(Point intersection, Object* object, vector<Light> lights,
+        vector<Object*> objects, Vector viewdir, int npower);
 
 #endif

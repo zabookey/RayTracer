@@ -1,6 +1,7 @@
 #ifndef FACE_HPP
 #define FACE_HPP
 
+#include "Object.hpp"
 #include "Point.hpp"
 #include "Vector.hpp"
 #include "Ray.hpp"
@@ -8,7 +9,7 @@
 #include "Vpmq.hpp"
 #include "CrossProduct.hpp"
 
-class Face{
+class Face: public Object{
     public:
         Point p0;
         Point p1;

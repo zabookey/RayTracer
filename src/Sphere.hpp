@@ -6,12 +6,8 @@
 #include "Point.hpp"
 #include "Ray.hpp"
 
-class Sphere{
+class Sphere: public Object{
     public:
-        Color color;
-        Color speccolor;
-        double ka, kd, ks;
-        int powerN;
         Point center;
         double radius;
         Sphere();

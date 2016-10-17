@@ -333,7 +333,7 @@ bool process_viewdir(string line, string delimiter, InputData& data){
 
 // Process the line that contains the token mtlcolor
 // Sets the mtlcolor to the desired to the rgb values.
-// This will be stored so any spheres created will be this color
+// This will be stored so any objects created will be this color
 bool process_mtlcolor(string line, string delimiter, Color& mtlcolor, 
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
         int& powerN){
@@ -571,18 +571,18 @@ bool process_sphere(string line, string delimiter, InputData& data, Color& mtlco
     } catch (invalid_argument& e){
         return false;
     }
-    Sphere sphere;
-    sphere.color = mtlcolor;
-    sphere.center.x = x;
-    sphere.center.y = y;
-    sphere.center.z = z;
-    sphere.radius = radius;
-    sphere.speccolor = speccolor;
-    sphere.ka = kAmbient;
-    sphere.kd = kDiffuse;
-    sphere.ks = kSpecular;
-    sphere.powerN = powerN;
-    data.spheres.push_back(sphere);
+    Sphere* sphere = new Sphere;
+    sphere->color = mtlcolor;
+    sphere->center.x = x;
+    sphere->center.y = y;
+    sphere->center.z = z;
+    sphere->radius = radius;
+    sphere->speccolor = speccolor;
+    sphere->ka = kAmbient;
+    sphere->kd = kDiffuse;
+    sphere->ks = kSpecular;
+    sphere->powerN = powerN;
+    data.objects.push_back(sphere);
     return true;
 }
 

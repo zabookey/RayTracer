@@ -34,7 +34,7 @@ bool checkValidity(InputData data){
         cout << "Error: Up direction and View direction are parallel" << endl;
         return false;
     }
-    if(data.spheres.size() == 0)
+    if(data.objects.size() == 0)
         cout << "Warning: Data valid but no spheres added to scene..." << endl;
     // Make sure that no directional lights have direction (0 0 0)
     bool invalidLight = false;

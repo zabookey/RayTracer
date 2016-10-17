@@ -8,7 +8,7 @@ set(HEADERS
     Point.hpp Vector.hpp Color.hpp Sphere.hpp InputData.hpp InputReader.hpp
     Ray.hpp Waxpby.hpp CrossProduct.hpp Norm.hpp Normalize.hpp Qppax.hpp
     Vpmq.hpp SphereCollision.hpp ValidityChecker.hpp Light.hpp DotProduct.hpp
-    Phong.hpp Face.hpp Plane.hpp
+    Phong.hpp Face.hpp Plane.hpp Object.hpp
     )
 
 add_library(raytracerlib ${SOURCES} ${HEADERS})
