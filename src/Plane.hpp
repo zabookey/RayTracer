@@ -9,7 +9,6 @@ class Plane{
         double b;
         double c;
         double d;
-
         Plane(Face f);
 };
 

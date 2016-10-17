@@ -22,6 +22,7 @@
 using namespace std;
 
 int main(int argc, char** argv){
+#ifndef TEST_ENV
     char * inputfilename;
     if(argc < 2){
         cout << "Usage Error... " <<endl;
@@ -219,4 +220,11 @@ int main(int argc, char** argv){
     for(int i = 0; i < imageWidth; i++)
         delete(pixelMap[i]);
     delete(pixelMap);
+#else
+    cout << "TEST ENV VARIABLE" << endl;
+    Face f(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
+    Ray r;
+    initRay(r, Point(0, 0, 0), Point(-1.0/3, -2.0/3, -2.0/3));
+    cout << "Ray Collision with Face at t = " << f.collision(r) << endl;
+#endif
 }

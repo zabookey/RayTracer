@@ -6,6 +6,8 @@ class Point{
     double x;
     double y;
     double z;
+    Point();
+    Point(double x, double y, double z);
 };
 
 inline void copyPoint(Point src, Point & dest){

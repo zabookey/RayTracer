@@ -6,5 +6,6 @@ set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_FLAGS "-std=c++11")
 
 #add_definitions(-DVERBOSE)
+add_definitions(-DTEST_ENV)
 
 add_subdirectory(src)

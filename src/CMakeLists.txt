@@ -1,7 +1,7 @@
 set(SOURCES
     InputReader.cpp Waxpby.cpp CrossProduct.cpp Norm.cpp Normalize.cpp
     Qppax.cpp Vpmq.cpp SphereCollision.cpp ValidityChecker.cpp DotProduct.cpp
-    Phong.cpp Plane.cpp
+    Phong.cpp Point.cpp Face.cpp Plane.cpp
     )
 
 set(HEADERS
