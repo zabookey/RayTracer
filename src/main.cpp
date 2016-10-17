@@ -119,7 +119,8 @@ int main(int argc, char** argv){
             // Cycle through the spheres and determine the collision
             // Determine how far the ray travels for the collision
             for(int i = 0; i < spheres.size(); i++){
-                double t = sphereCollision(r, spheres[i]);
+                double t = spheres[i].collision(r);
+                //double t = sphereCollision(r, spheres[i]);
                 if(t >= 0){
                     // If this t is closer than the previous t
                     // change the nearestDist and and point to this sphere
@@ -222,7 +223,9 @@ int main(int argc, char** argv){
     delete(pixelMap);
 #else
     cout << "TEST ENV VARIABLE" << endl;
-    Face f(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
+    Face f(Point(1, 1, 0), Point(0, 1, 1), Point(1, 0, 1));
+    Vector normalV = f.normVector(NULL);
+    cout << "NormalVector: (" << normalV.dx << " " << normalV.dy << " " << normalV.dz << ")" << endl;
     Ray r;
     initRay(r, Point(0, 0, 0), Point(-1.0/3, -2.0/3, -2.0/3));
     cout << "Ray Collision with Face at t = " << f.collision(r) << endl;

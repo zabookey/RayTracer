@@ -26,9 +26,10 @@ Color phong(Point intersection, Sphere sphere, vector<Light> lights,
     blue = ka*spherecolor.blue;
     green = ka*spherecolor.green;
     for(int i = 0; i < lights.size(); i++){
-        Vector N; // The surface normal vector at the intersection point
-        vpmq(N, intersection, sphere.center); // N = intersection - sphere.center
-        scaleVector(N, 1/sphere.radius); // Normalize N by dividing sphere redius
+        Vector N = sphere.normVector(&intersection);
+//        Vector N; // The surface normal vector at the intersection point
+//        vpmq(N, intersection, sphere.center); // N = intersection - sphere.center
+//        scaleVector(N, 1/sphere.radius); // Normalize N by dividing sphere redius
         Vector L; // The vector pointed towards the light
         Light light = lights[i]; // The current light to be checked
         double distanceToLight = DBL_MAX; // Initiate the distance to the light as DBL_MAX
