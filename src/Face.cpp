@@ -1,5 +1,8 @@
 #include "Face.hpp"
 #include "Plane.hpp"
+#include "Normalize.hpp"
+
+Face::Face(){};
 
 Face::Face(Point p_0, Point p_1, Point p_2):
     p0(p_0), p1(p_1), p2(p_2){};
@@ -9,7 +12,7 @@ double Face::collision(Ray r){
     Vector d = r.direction;
     Point o = r.origin;
     double denom = p.a*d.dx + p.b*d.dy + p.c*d.dz;
-    if(denom == 0) // Should be a < tolerance dealio...
+    if(fabs(denom) < 1e-4) // Should be a < tolerance dealio...
         return -1.0;
     double numer = -(p.a*o.x + p.b*o.y + p.c*o.z + p.d);
     // t value where ray intersects the plane.
@@ -53,5 +56,6 @@ Vector Face::normVector(Point* collision){
     vpmq(e2, p2, p0);
     Vector n;
     crossProduct(n, e1, e2);
+    normalize(n);
     return n;
 }

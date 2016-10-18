@@ -155,17 +155,15 @@ int main(int argc, char** argv){
     cout << "BKG Color: (" << inputdata.bkgcolor.red << " " << inputdata.bkgcolor.green << " " << inputdata.bkgcolor.blue << ")" << endl;
     cout << "Up direction: (" << inputdata.updir.dx << " " << inputdata.updir.dy << " " << inputdata.updir.dz << ")" << endl;
     cout << "View direction: (" << inputdata.viewdir.dx << " " << inputdata.viewdir.dy << " " << inputdata.viewdir.dz << ")" << endl;
-    cout << "Number of Spheres: " << inputdata.spheres.size() << endl;
-    for(int i = 0; i < inputdata.spheres.size(); i++){
+    cout << "Number of Spheres: " << inputdata.objects.size() << endl;
+    for(int i = 0; i < inputdata.objects.size(); i++){
         cout << "Sphere " << i << ":" << endl;
-        cout << "    " << "Color: (" << inputdata.spheres[i].color.red << " " << inputdata.spheres[i].color.green << " " << inputdata.spheres[i].color.blue << ")" << endl;
-        cout << "    " << "Specular Color: (" << inputdata.spheres[i].speccolor.red << " " << inputdata.spheres[i].speccolor.green << " " << inputdata.spheres[i].speccolor.blue << ")" << endl;
-        cout << "    " << "K Ambient:  " << inputdata.spheres[i].ka << endl;
-        cout << "    " << "K Diffuse:  " << inputdata.spheres[i].kd << endl;
-        cout << "    " << "K Specular: " << inputdata.spheres[i].ks << endl;
-        cout << "    " << "N Power:    " << inputdata.spheres[i].powerN << endl;
-        cout << "    " << "Loc: (" << inputdata.spheres[i].center.x << " " << inputdata.spheres[i].center.y << " " << inputdata.spheres[i].center.z << ")" << endl;
-        cout << "    " << "Radius: " << inputdata.spheres[i].radius << endl;
+        cout << "    " << "Color: (" << inputdata.objects[i]->color.red << " " << inputdata.objects[i]->color.green << " " << inputdata.objects[i]->color.blue << ")" << endl;
+        cout << "    " << "Specular Color: (" << inputdata.objects[i]->speccolor.red << " " << inputdata.objects[i]->speccolor.green << " " << inputdata.objects[i]->speccolor.blue << ")" << endl;
+        cout << "    " << "K Ambient:  " << inputdata.objects[i]->ka << endl;
+        cout << "    " << "K Diffuse:  " << inputdata.objects[i]->kd << endl;
+        cout << "    " << "K Specular: " << inputdata.objects[i]->ks << endl;
+        cout << "    " << "N Power:    " << inputdata.objects[i]->powerN << endl;
     }
     cout << "Number of Lights: " << inputdata.lights.size() << endl;
     for(int i = 0; i < inputdata.lights.size(); i++){

@@ -74,7 +74,8 @@ int readInputFile(string filename, InputData& data){
         } else if(keyword.compare("v") == 0){
             error = !process_vertex(line, delimiter, data);
         } else if(keyword.compare("f") == 0){
-            error = !process_face(line, delimiter, data);
+            error = !process_face(line, delimiter, data, mtlcolor, speccolor,
+                    kAmbient, kDiffuse, kSpecular, powerN);
         }
         if(error){
             inputFile.close();
@@ -734,7 +735,9 @@ bool process_vertex(string line, string delimiter, InputData& data){
 // Process the line that contains the token f
 // Reads in the vertices from the vertex array and creates the appropriate face.
 // Adds the face to the face array
-bool process_face(string line, string delimiter, InputData& data){
+bool process_face(string line, string delimiter, InputData& data, Color& mtlcolor,
+        Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
+        int& powerN){
     int v1, v2, v3;
     size_t pos = line.find(delimiter);
     // eye has 0 or 1 tokens so fail
@@ -778,5 +781,16 @@ bool process_face(string line, string delimiter, InputData& data){
     }
     data.faces.push_back(Face(data.vertices[v1-1], data.vertices[v2-1],
                 data.vertices[v3-1]));
+    Face* face = new Face;
+    face->p0 = data.vertices[v1-1];
+    face->p1 = data.vertices[v2-1];
+    face->p2 = data.vertices[v3-1];
+    face->color = mtlcolor;
+    face->speccolor = speccolor;
+    face->ka = kAmbient;
+    face->kd = kDiffuse;
+    face->ks = kSpecular;
+    face->powerN = powerN;
+    data.objects.push_back(face);
     return true;
 }

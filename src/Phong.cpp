@@ -56,8 +56,10 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
             r.origin = intersection;
             r.direction = L;
             double t = objects[j]->collision(r); // Check if and where this ray intersects this object
+//            cout << "Intersection Point: (" << intersection.x << " " << intersection.y << " " << intersection.z << ")";
+//            cout << "    Shadow T: " << t << endl;
             // If there is a collision set the shadowlessFlag to false
-            if(t >= 0 && t < distanceToLight){
+            if(t >= 1e-4 && t < distanceToLight){
                 shadowlessFlag = false;
             }
         }
@@ -79,6 +81,18 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
             green += light.color.green*(kd*objectcolor.green*NdotL + ks*specular.green*NdotH);
         }
     }
+//    if(red > 1)
+//        red = 1;
+//    if(blue > 1)
+//        blue = 1;
+//    if(green > 1)
+//        green = 1;
+//    if(red < 0)
+//        red = 0;
+//    if(blue < 0)
+//        blue = 0;
+//    if(green < 0)
+//        green = 0;
     // Initiate finalColor and return it
     Color finalColor;
     finalColor.red = red;
