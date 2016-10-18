@@ -12,7 +12,9 @@
 #include "SphereCollision.hpp"
 #include "ValidityChecker.hpp"
 #include "Phong.hpp"
+#include "Texture.hpp"
 
+#include <string>
 #include <iostream>
 #include <cmath>
 #include <float.h>
@@ -40,11 +42,20 @@ int main(int argc, char** argv){
             cout << "Error: Input file (" << inputfilename << ")  was not able to be opened" << endl;
         else 
             cout << "Error reading input file at line " << ierr << endl;
+        // Objects may have been allocated even though the read failed.
+        vector<Object*> objects = inputdata.objects;
+        for(int i = 0; i < objects.size(); i++)
+            delete(objects[i]);
         return 1;
     }
     bool valid = checkValidity(inputdata);
-    if(!valid)
+    if(!valid){
+        // Objects may have been allocated even though the read wasn't valid
+        vector<Object*> objects = inputdata.objects;
+        for(int i = 0; i < objects.size(); i++)
+            delete(objects[i]);
         return 1;
+    }
     // Extract the data from inputdata
     int imageWidth = inputdata.imageWidth;
     int imageHeight = inputdata.imageHeight;
@@ -202,8 +213,8 @@ int main(int argc, char** argv){
     outputfilename.append(".ppm");
     ofstream outputFile;
     outputFile.open(outputfilename);
-    outputFile << "P3\n";
-    outputFile << imageWidth << " " << imageHeight << "\n";
+    outputFile << "P3 ";
+    outputFile << imageWidth << " " << imageHeight << " ";
     outputFile << 255 << "\n";
     for(int i = 0; i < imageHeight; i++){
         for(int j = 0; j < imageWidth; j++){
@@ -230,5 +241,26 @@ int main(int argc, char** argv){
     Ray r;
     initRay(r, Point(0, 0, 0), Point(-1.0/3, -2.0/3, -2.0/3));
     cout << "Ray Collision with Face at t = " << f.collision(r) << endl;
+    bool error = false;
+    Texture t("Masterpiece.ppm", error);
+    if(error)
+        cout << "Error in Texture constructor" << endl;
+    else
+        cout << "Texture read properly!" << endl;
+
+    ofstream outputFile;
+    outputFile.open("CopyPicture.ppm");
+    outputFile << "P3 ";
+    outputFile << t.width << " " << t.height << " ";
+    outputFile << 255 << "\n";
+    for(int i = 0; i < t.height; i++){
+        for(int j = 0; j < t.width; j++){
+            Color color = t.pixelArray[j][i];
+            outputFile << static_cast <int> (floor(color.red * 255)) << " ";
+            outputFile << static_cast <int> (floor(color.green * 255)) << " ";
+            outputFile << static_cast <int> (floor(color.blue * 255)) << "\n";
+        }
+    }
+    outputFile.close();
 #endif
 }

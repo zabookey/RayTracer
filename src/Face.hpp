@@ -14,6 +14,7 @@ class Face: public Object{
         Point p0;
         Point p1;
         Point p2;
+        bool smooth = false;
         Face();
         Face(Point p0_, Point p_1, Point p_2);
         double collision(Ray r);
