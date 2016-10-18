@@ -20,7 +20,7 @@ class InputData{
     int fovv;
     std::vector<Object*> objects;
     std::vector<Point> vertices;
-    std::vector<Face> faces;
+    std::vector<Vector> vertexNorms;
     std::vector<Light> lights;
 };
 

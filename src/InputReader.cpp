@@ -76,6 +76,8 @@ int readInputFile(string filename, InputData& data){
         } else if(keyword.compare("f") == 0){
             error = !process_face(line, delimiter, data, mtlcolor, speccolor,
                     kAmbient, kDiffuse, kSpecular, powerN);
+        } else if(keyword.compare("vn") == 0){
+            error = !process_vertexNormal(line, delimiter, data);
         }
         if(error){
             inputFile.close();
@@ -739,6 +741,8 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
         int& powerN){
     int v1, v2, v3;
+    int vn1 = -1, vn2 = -1, vn3 = -1;
+    string div = "/";
     size_t pos = line.find(delimiter);
     // eye has 0 or 1 tokens so fail
     if(pos == string::npos){
@@ -746,7 +750,28 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     }
     string token = line.substr(0,pos);
     try{
-        v1 = stoi(token, NULL);
+        size_t tpos = token.find(div);
+        if(tpos == string::npos)
+            v1 = stoi(token, NULL);
+        else{
+            string subtoken = token.substr(0, tpos);
+            v1 = stoi(subtoken, NULL);
+            token.erase(0, tpos+div.length());
+            tpos = token.find(div);
+            if(tpos == string::npos){
+                // vt1 = stoi(token, NULL);
+            } else {
+                if(tpos != 0) {
+                    subtoken = token.substr(0,tpos);
+                    // vt1 = stoi(subtoken, NULL);
+                }
+                token.erase(0, tpos+div.length());
+                if(token.length() <= 0)
+                    return false;
+                else
+                    vn1 = stoi(token, NULL);
+            }
+        }
     } catch (invalid_argument& e){
         return false;
     }
@@ -758,18 +783,83 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     }
     token = line.substr(0,pos);
     try{
-        v2 = stoi(token, NULL);
+        size_t tpos = token.find(div);
+        if(tpos == string::npos)
+            v2 = stoi(token, NULL);
+        else{
+            string subtoken = token.substr(0, tpos);
+            v2 = stoi(subtoken, NULL);
+            token.erase(0, tpos+div.length());
+            tpos = token.find(div);
+            if(tpos == string::npos){
+                // vt2 = stoi(token, NULL);
+            } else {
+                if(tpos != 0) {
+                    subtoken = token.substr(0,tpos);
+                    // vt2 = stoi(subtoken, NULL);
+                }
+                token.erase(0, tpos+div.length());
+                if(token.length() <= 0)
+                    return false;
+                else
+                    vn2 = stoi(token, NULL);
+            }
+        }
     } catch (invalid_argument& e){
         return false;
     }
     line.erase(0,pos+delimiter.length());
     pos = line.find(delimiter);
     try{
-        if(pos == string::npos)
-            v3 = stoi(line, NULL);
+        token = line;
+        if(pos == string::npos){
+            size_t tpos = token.find(div);
+            if(tpos == string::npos)
+                v3 = stoi(token, NULL);
+            else{
+                string subtoken = token.substr(0, tpos);
+                v3 = stoi(subtoken, NULL);
+                token.erase(0, tpos+div.length());
+                tpos = token.find(div);
+                if(tpos == string::npos){
+                    // vt3 = stoi(token, NULL);
+                } else {
+                    if(tpos != 0) {
+                        subtoken = token.substr(0,tpos);
+                        // vt3 = stoi(subtoken, NULL);
+                    }
+                    token.erase(0, tpos+div.length());
+                    if(token.length() <= 0)
+                        return false;
+                    else
+                        vn3 = stoi(token, NULL);
+                }
+            }
+        }
         else{
             token = line.substr(0,pos);
-            v3 = stoi(token, NULL);
+            size_t tpos = token.find(div);
+            if(tpos == string::npos)
+                v3 = stoi(token, NULL);
+            else{
+                string subtoken = token.substr(0, tpos);
+                v3 = stoi(subtoken, NULL);
+                token.erase(0, tpos+div.length());
+                tpos = token.find(div);
+                if(tpos == string::npos){
+                    // vt3 = stoi(token, NULL);
+                } else {
+                    if(tpos != 0) {
+                        subtoken = token.substr(0,tpos);
+                        // vt3 = stoi(subtoken, NULL);
+                    }
+                    token.erase(0, tpos+div.length());
+                    if(token.length() <= 0)
+                        return false;
+                    else
+                        vn3 = stoi(token, NULL);
+                }
+            }
         }
     } catch (invalid_argument& e){
         return false;
@@ -777,14 +867,31 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     int nv = data.vertices.size();
     if(v1 < 1 || v1 > nv || v2 < 1 || v2 > nv || v3 < 1 || v3 > nv){
         cout << "Face wants vertex that doesn't exist yet." << endl;
+        cout << "(" << v1 << " " << v2 << " " << v3 << ")" << endl;
         return false;
     }
-    data.faces.push_back(Face(data.vertices[v1-1], data.vertices[v2-1],
-                data.vertices[v3-1]));
+    bool norms_set = (vn1 != -1 && vn2 != -1 && vn3 != -1);
+    if(norms_set){ // Check if vertex norms are set.
+        cout << "NORMS_SET" << endl;
+        int nvn = data.vertexNorms.size();
+        if(vn1 < 1 || vn1 > nvn || vn2 < 1 || vn2 > nvn || vn3 < 1 || vn3 > nvn){
+           cout << "Face wants vertex norm that doesn't exist yet." << endl;
+           return false;
+        }
+    } else 
+        cout << "(" << vn1 << " " << vn2 << " " << vn3 << ")" << endl;
+    int nvn = data.vertices.size();
     Face* face = new Face;
     face->p0 = data.vertices[v1-1];
     face->p1 = data.vertices[v2-1];
     face->p2 = data.vertices[v3-1];
+    if(norms_set){
+        cout << "DEBUG INPUT READER" << endl;
+        face->np0 = data.vertexNorms[vn1-1];
+        face->np1 = data.vertexNorms[vn2-1];
+        face->np2 = data.vertexNorms[vn3-1];
+        face->smooth = true;
+    }
     face->color = mtlcolor;
     face->speccolor = speccolor;
     face->ka = kAmbient;
@@ -792,5 +899,49 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     face->ks = kSpecular;
     face->powerN = powerN;
     data.objects.push_back(face);
+    return true;
+}
+
+// Processes the line that contains the token vn
+// reads in the information to add a new vector to the array of vertex normals
+bool process_vertexNormal(string line, string delimiter, InputData& data){
+    Vector vn;
+    size_t pos = line.find(delimiter);
+    // updir has 0 or 1 tokens so fail
+    if(pos == string::npos){
+        return false;
+    }
+    string token = line.substr(0,pos);
+    try{
+        vn.dx = stod(token, NULL);
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0, pos+delimiter.length());
+    pos = line.find(delimiter);
+    // updir has 1 or 2 tokens so fail
+    if(pos == string::npos){
+        return false;
+    }
+    token = line.substr(0,pos);
+    try{
+        vn.dy = stod(token, NULL);
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0,pos+delimiter.length());
+    pos = line.find(delimiter);
+    try{
+        if(pos == string::npos)
+            vn.dz = stod(line, NULL);
+        else{
+            token = line.substr(0,pos);
+            vn.dz = stod(token, NULL);
+        }
+    } catch (invalid_argument& e){
+        return false;
+    }
+    normalize(vn);
+    data.vertexNorms.push_back(vn);
     return true;
 }

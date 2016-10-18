@@ -8,6 +8,8 @@ class Vector{
     double dx;
     double dy;
     double dz;
+    Vector();
+    Vector(double dx_, double dy_, double dz_);
 };
 
 inline void copyVector(Vector src, Vector & dest){

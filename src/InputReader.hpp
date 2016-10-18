@@ -44,4 +44,6 @@ bool process_vertex(std::string line, std::string delimiter, InputData& data);
 bool process_face(std::string line, std::string delimiter, InputData& data, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
         int& powerN);
+
+bool process_vertexNormal(std::string line, std::string delimiter, InputData& data);
 #endif

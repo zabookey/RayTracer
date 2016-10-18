@@ -3,10 +3,11 @@
 #include "Normalize.hpp"
 #include "Waxpby.hpp"
 
-Face::Face(){};
+#include <iostream>
+Face::Face(){smooth = false;};
 
 Face::Face(Point p_0, Point p_1, Point p_2):
-    p0(p_0), p1(p_1), p2(p_2){};
+    p0(p_0), p1(p_1), p2(p_2){smooth = false;};
 
 double Face::collision(Ray r){
     Plane p(*this);
@@ -88,8 +89,8 @@ Vector Face::normVector(Point* collision){
         crossProduct(cp, e1, e2);
         c = norm(cp)/2;
         c = c/faceArea;
-//        waxpby(n, a, np0, b, np1);
-//        waxpby(n, 1, n, c, np2);
+        waxpby(n, a, np0, b, np1);
+        waxpby(n, 1, n, c, np2);
         normalize(n);
     }
     return n;
