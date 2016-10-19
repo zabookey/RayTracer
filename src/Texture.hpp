@@ -12,7 +12,8 @@ class Texture{
         int width;
         int height;
         Color ** pixelArray = NULL;
-        Texture(string filename, bool& error);
+        Texture();
+        Texture(string filename, bool& success);
         ~Texture();
 };
 #endif

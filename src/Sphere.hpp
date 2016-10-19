@@ -6,6 +6,8 @@
 #include "Point.hpp"
 #include "Ray.hpp"
 
+#define PI 3.14159265
+
 class Sphere: public Object{
     public:
         Point center;
@@ -13,6 +15,7 @@ class Sphere: public Object{
         Sphere();
         double collision(Ray r);
         Vector normVector(Point* collision);
+        Color getColor(Point p);
 };
 
 #endif

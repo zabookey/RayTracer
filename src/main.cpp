@@ -19,7 +19,7 @@
 #include <cmath>
 #include <float.h>
 
-#define PI 3.14159265
+//#define PI 3.14159265
 
 using namespace std;
 
@@ -46,6 +46,9 @@ int main(int argc, char** argv){
         vector<Object*> objects = inputdata.objects;
         for(int i = 0; i < objects.size(); i++)
             delete(objects[i]);
+        vector<Texture*> textures = inputdata.textures;
+        for(int i = 0; i < textures.size(); i++)
+            delete(textures[i]);
         return 1;
     }
     bool valid = checkValidity(inputdata);
@@ -54,6 +57,9 @@ int main(int argc, char** argv){
         vector<Object*> objects = inputdata.objects;
         for(int i = 0; i < objects.size(); i++)
             delete(objects[i]);
+        vector<Texture*> textures = inputdata.textures;
+        for(int i = 0; i < textures.size(); i++)
+            delete(textures[i]);
         return 1;
     }
     // Extract the data from inputdata
@@ -225,13 +231,16 @@ int main(int argc, char** argv){
         }
     }
     outputFile.close();
-
+    cout << "Scene written successfully to " << outputfilename << endl;
     // Clean up the allocated arrays
     for(int i = 0; i < imageWidth; i++)
         delete(pixelMap[i]);
     delete(pixelMap);
     for(int i = 0; i < objects.size(); i++)
         delete(objects[i]);
+    vector<Texture*> textures = inputdata.textures;
+    for(int i = 0; i < textures.size(); i++)
+        delete(textures[i]);
 
 #else
     cout << "TEST ENV VARIABLE" << endl;
@@ -241,10 +250,12 @@ int main(int argc, char** argv){
     Ray r;
     initRay(r, Point(0, 0, 0), Point(-1.0/3, -2.0/3, -2.0/3));
     cout << "Ray Collision with Face at t = " << f.collision(r) << endl;
-    bool error = false;
-    Texture t("Masterpiece.ppm", error);
-    if(error)
+    bool success = false;
+    Texture t("Masterpiece.ppm", success);
+    if(!success){
         cout << "Error in Texture constructor" << endl;
+        return 1;
+    }
     else
         cout << "Texture read properly!" << endl;
 

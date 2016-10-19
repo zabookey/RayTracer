@@ -22,6 +22,8 @@ int readInputFile(string filename, InputData& data){
     Color speccolor;
     speccolor.red = 0; speccolor.green = 0; speccolor.blue=0;
 
+    bool textured = false;
+
     double kAmbient = 0;
     double kDiffuse = 0;
     double kSpecular = 0;
@@ -66,18 +68,24 @@ int readInputFile(string filename, InputData& data){
         } else if(keyword.compare("mtlcolor") == 0){
             error = !process_mtlcolor(line, delimiter, mtlcolor, speccolor,
                     kAmbient, kDiffuse, kSpecular, powerN);
+            textured = false;
         } else if(keyword.compare("sphere") == 0){
             error = !process_sphere(line, delimiter, data, mtlcolor, speccolor,
-                    kAmbient, kDiffuse, kSpecular, powerN);
+                    kAmbient, kDiffuse, kSpecular, powerN, textured);
         } else if(keyword.compare("light") == 0){
             error = !process_light(line, delimiter, data);
         } else if(keyword.compare("v") == 0){
             error = !process_vertex(line, delimiter, data);
         } else if(keyword.compare("f") == 0){
             error = !process_face(line, delimiter, data, mtlcolor, speccolor,
-                    kAmbient, kDiffuse, kSpecular, powerN);
+                    kAmbient, kDiffuse, kSpecular, powerN, textured);
         } else if(keyword.compare("vn") == 0){
             error = !process_vertexNormal(line, delimiter, data);
+        } else if(keyword.compare("texture") == 0){
+            error = !process_texture(line, delimiter, data);
+            textured = true;
+        } else if(keyword.compare("vt") == 0){
+            error = !process_textureVertex(line, delimiter, data);
         }
         if(error){
             inputFile.close();
@@ -520,7 +528,7 @@ bool process_mtlcolor(string line, string delimiter, Color& mtlcolor,
 // Adds a sphere created by the information in this line to the vector
 bool process_sphere(string line, string delimiter, InputData& data, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN){
+        int& powerN, bool textured){
     double x;
     double y;
     double z;
@@ -576,6 +584,15 @@ bool process_sphere(string line, string delimiter, InputData& data, Color& mtlco
     }
     Sphere* sphere = new Sphere;
     sphere->color = mtlcolor;
+    if(textured){
+        // Set the texture to the most recently added texture;
+        int index = data.textures.size() - 1;
+        if(index < 0)
+            return false;
+        else
+            sphere->texture = data.textures[index];
+        sphere->textured = true;
+    }
     sphere->center.x = x;
     sphere->center.y = y;
     sphere->center.z = z;
@@ -739,9 +756,10 @@ bool process_vertex(string line, string delimiter, InputData& data){
 // Adds the face to the face array
 bool process_face(string line, string delimiter, InputData& data, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN){
+        int& powerN, bool textured){
     int v1, v2, v3;
     int vn1 = -1, vn2 = -1, vn3 = -1;
+    int vt1 = -1, vt2 = -1, vt3 = -1;
     string div = "/";
     size_t pos = line.find(delimiter);
     // eye has 0 or 1 tokens so fail
@@ -759,11 +777,11 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
             token.erase(0, tpos+div.length());
             tpos = token.find(div);
             if(tpos == string::npos){
-                // vt1 = stoi(token, NULL);
+                 vt1 = stoi(token, NULL);
             } else {
                 if(tpos != 0) {
                     subtoken = token.substr(0,tpos);
-                    // vt1 = stoi(subtoken, NULL);
+                     vt1 = stoi(subtoken, NULL);
                 }
                 token.erase(0, tpos+div.length());
                 if(token.length() <= 0)
@@ -792,11 +810,11 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
             token.erase(0, tpos+div.length());
             tpos = token.find(div);
             if(tpos == string::npos){
-                // vt2 = stoi(token, NULL);
+                 vt2 = stoi(token, NULL);
             } else {
                 if(tpos != 0) {
                     subtoken = token.substr(0,tpos);
-                    // vt2 = stoi(subtoken, NULL);
+                     vt2 = stoi(subtoken, NULL);
                 }
                 token.erase(0, tpos+div.length());
                 if(token.length() <= 0)
@@ -822,11 +840,11 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
                 token.erase(0, tpos+div.length());
                 tpos = token.find(div);
                 if(tpos == string::npos){
-                    // vt3 = stoi(token, NULL);
+                     vt3 = stoi(token, NULL);
                 } else {
                     if(tpos != 0) {
                         subtoken = token.substr(0,tpos);
-                        // vt3 = stoi(subtoken, NULL);
+                         vt3 = stoi(subtoken, NULL);
                     }
                     token.erase(0, tpos+div.length());
                     if(token.length() <= 0)
@@ -847,11 +865,11 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
                 token.erase(0, tpos+div.length());
                 tpos = token.find(div);
                 if(tpos == string::npos){
-                    // vt3 = stoi(token, NULL);
+                     vt3 = stoi(token, NULL);
                 } else {
                     if(tpos != 0) {
                         subtoken = token.substr(0,tpos);
-                        // vt3 = stoi(subtoken, NULL);
+                         vt3 = stoi(subtoken, NULL);
                     }
                     token.erase(0, tpos+div.length());
                     if(token.length() <= 0)
@@ -878,9 +896,16 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
            cout << "Face wants vertex norm that doesn't exist yet." << endl;
            return false;
         }
-    } else 
-        cout << "(" << vn1 << " " << vn2 << " " << vn3 << ")" << endl;
-    int nvn = data.vertices.size();
+    } 
+    bool texts_set = (vt1 != -1 && vt2 != -1 && vt3 != -1);
+    if(texts_set){ // Check if vertex norms are set.
+        cout << "TEXTS_SET" << endl;
+        int nvt = data.textureVertices.size();
+        if(vt1 < 1 || vt1 > nvt|| vt2 < 1 || vt2 > nvt || vt3 < 1 || vt3 > nvt){
+           cout << "Face wants texture vertex that doesn't exist yet." << endl;
+           return false;
+        }
+    }
     Face* face = new Face;
     face->p0 = data.vertices[v1-1];
     face->p1 = data.vertices[v2-1];
@@ -891,6 +916,18 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
         face->np1 = data.vertexNorms[vn2-1];
         face->np2 = data.vertexNorms[vn3-1];
         face->smooth = true;
+    }
+    if(texts_set && textured){
+        face->tp0 = data.textureVertices[vt1-1];
+        face->tp1 = data.textureVertices[vt2-1];
+        face->tp2 = data.textureVertices[vt3-1];
+        // Set the texture to the most recently added texture;
+        int index = data.textures.size() - 1;
+        if(index < 0)
+            return false;
+        else
+            face->texture = data.textures[index];
+        face->textured = true;
     }
     face->color = mtlcolor;
     face->speccolor = speccolor;
@@ -943,5 +980,43 @@ bool process_vertexNormal(string line, string delimiter, InputData& data){
     }
     normalize(vn);
     data.vertexNorms.push_back(vn);
+    return true;
+}
+
+bool process_texture(string line, string delimiter, InputData& data){
+    bool success;
+    Texture* t = new Texture(line, success);
+    data.textures.push_back(t);
+    return success;
+}
+
+// Processes the line that contains the token vn
+// reads in the information to add a new vector to the array of vertex normals
+bool process_textureVertex(string line, string delimiter, InputData& data){
+    TextureVertex tv;
+    size_t pos = line.find(delimiter);
+    // updir has 0 or 1 tokens so fail
+    if(pos == string::npos){
+        return false;
+    }
+    string token = line.substr(0,pos);
+    try{
+        tv.u = stoi(token, NULL);
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0, pos+delimiter.length());
+    pos = line.find(delimiter);
+    try{
+        if(pos == string::npos)
+            tv.v = stoi(line, NULL);
+        else{
+            token = line.substr(0,pos);
+            tv.v = stoi(token, NULL);
+        }
+    } catch (invalid_argument& e){
+        return false;
+    }
+    data.textureVertices.push_back(tv);
     return true;
 }

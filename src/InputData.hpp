@@ -7,6 +7,8 @@
 #include "Sphere.hpp"
 #include "Light.hpp"
 #include "Face.hpp"
+#include "Texture.hpp"
+#include "TextureVertex.hpp"
 #include <vector>
 
 class InputData{
@@ -22,6 +24,8 @@ class InputData{
     std::vector<Point> vertices;
     std::vector<Vector> vertexNorms;
     std::vector<Light> lights;
+    std::vector<Texture*> textures;
+    std::vector<TextureVertex> textureVertices;
 };
 
 #endif

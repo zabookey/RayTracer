@@ -5,10 +5,12 @@
 #include <sstream>
 #include <stdexcept>
 
-Texture::Texture(string filename, bool& error){
+Texture::Texture(){};
+
+Texture::Texture(string filename, bool& success){
     ifstream inputFile(filename);
     if(!inputFile){
-        error = true;
+        success = false;
         return;
     }
     int maxPixelValue;
@@ -18,7 +20,7 @@ Texture::Texture(string filename, bool& error){
     size_t pos = line.find(delimiter);
     // Find the P3 keyword and throw it out...
     if(pos == string::npos){
-        error = true;
+        success = false;
         inputFile.close();
         return;
     }
@@ -26,7 +28,7 @@ Texture::Texture(string filename, bool& error){
     // Find the width value
     pos = line.find(delimiter);
     if(pos == string::npos){
-        error = true;
+        success = false;
         inputFile.close();
         return;
     }
@@ -34,7 +36,7 @@ Texture::Texture(string filename, bool& error){
     try{
         width = stoi(widthstring, NULL);
     } catch (invalid_argument& e){
-        error = true;
+        success = false;
         inputFile.close();
         return;
     }
@@ -42,7 +44,7 @@ Texture::Texture(string filename, bool& error){
     // Find the height value
     pos = line.find(delimiter);
     if(pos == string::npos){
-        error = true;
+        success = false;
         inputFile.close();
         return;
     }
@@ -50,7 +52,7 @@ Texture::Texture(string filename, bool& error){
     try{
         height = stoi(heightstring, NULL);
     } catch (invalid_argument& e){
-        error = true;
+        success = false;
         inputFile.close();
         return;
     }
@@ -58,14 +60,14 @@ Texture::Texture(string filename, bool& error){
     // Find the max pixel value
     pos = line.find(delimiter);
     if(pos != string::npos){
-        error = true;
+        success = false;
         inputFile.close();
         return;
     }
     try{
         maxPixelValue = stoi(line, NULL);
     } catch (invalid_argument& e){
-        error = true;
+        success = false;
         inputFile.close();
         return;
     }
@@ -79,7 +81,7 @@ Texture::Texture(string filename, bool& error){
         // Find the width value
         pos = line.find(delimiter);
         if(pos == string::npos){
-            error = true;
+            success = false;
             inputFile.close();
             return;
         }
@@ -87,7 +89,7 @@ Texture::Texture(string filename, bool& error){
         try{
             red = stoi(redstring, NULL);
         } catch (invalid_argument& e){
-            error = true;
+            success = false;
             inputFile.close();
             return;
         }
@@ -95,7 +97,7 @@ Texture::Texture(string filename, bool& error){
         // Find the height value
         pos = line.find(delimiter);
         if(pos == string::npos){
-            error = true;
+            success = false;
             inputFile.close();
             return;
         }
@@ -103,7 +105,7 @@ Texture::Texture(string filename, bool& error){
         try{
             green = stoi(greenstring, NULL);
         } catch (invalid_argument& e){
-            error = true;
+            success = false;
             inputFile.close();
             return;
         }
@@ -111,14 +113,14 @@ Texture::Texture(string filename, bool& error){
         // Find the max pixel value
         pos = line.find(delimiter);
         if(pos != string::npos){
-            error = true;
+            success = false;
             inputFile.close();
             return;
         }
         try{
             blue = stoi(line, NULL);
         } catch (invalid_argument& e){
-        error = true;
+        success = false;
         inputFile.close();
         return;
         }
@@ -130,6 +132,7 @@ Texture::Texture(string filename, bool& error){
         pixelnum++;
     }
     inputFile.close();
+    success = true;
 }
 
 Texture::~Texture(){

@@ -4,6 +4,7 @@
 #include "Ray.hpp"
 #include "Point.hpp"
 #include "Color.hpp"
+#include "Texture.hpp"
 
 // A base class for scene objects to extend.
 class Object{
@@ -12,7 +13,10 @@ class Object{
         Color speccolor;
         double ka, kd, ks;
         int powerN;
+        bool textured = false;
+        Texture* texture = NULL;
         virtual double collision(Ray r)=0;
-        virtual Vector normVector(Point* collision)=0;
+        virtual Vector normVector(Point* collision)=0; // Point* so null can be passed
+        virtual Color getColor(Point p)=0; 
 };
 #endif

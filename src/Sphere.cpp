@@ -36,3 +36,21 @@ Vector Sphere::normVector(Point* collision){
     scaleVector(N, 1/radius);
     return N;
 };
+
+Color Sphere::getColor(Point p){
+    if(!textured)
+        return color;
+    else{
+        Texture* t = texture;
+        Vector n = normVector(&p);
+        double phi = acos(n.dy);
+        double theta = atan2(n.dx,n.dz);
+        double v = phi/PI;
+        if(theta < 0)
+            theta += 2*PI;
+        double u = theta/(2*PI);
+        int i = (int) round(u * (t->width-1));
+        int j = (int) round(v * (t->height-1));
+        return t->pixelArray[i][j];
+    }
+}

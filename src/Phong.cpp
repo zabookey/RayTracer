@@ -19,7 +19,7 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
     double ka = object->ka;
     double kd = object->kd;
     double ks = object->ks;
-    Color objectcolor = object->color;
+    Color objectcolor = object->getColor(intersection);
     Color specular = object->speccolor;
     //specular.red = 1; specular.blue = 1; specular.green = 1;
     red = ka*objectcolor.red;
