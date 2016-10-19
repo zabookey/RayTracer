@@ -917,7 +917,7 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
         face->np2 = data.vertexNorms[vn3-1];
         face->smooth = true;
     }
-    if(texts_set && textured){
+    if(texts_set){
         face->tp0 = data.textureVertices[vt1-1];
         face->tp1 = data.textureVertices[vt2-1];
         face->tp2 = data.textureVertices[vt3-1];

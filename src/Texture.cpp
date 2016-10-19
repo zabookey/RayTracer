@@ -5,8 +5,11 @@
 #include <sstream>
 #include <stdexcept>
 
+// Empty constructor
 Texture::Texture(){};
 
+// Constructor that reads a .ppm file and saves the image in it's pixelArray
+// Assumes the ppm image has a one line header.
 Texture::Texture(string filename, bool& success){
     ifstream inputFile(filename);
     if(!inputFile){
@@ -135,6 +138,8 @@ Texture::Texture(string filename, bool& success){
     success = true;
 }
 
+// Destructor that deallocates the pixelArray if the constructor was successful
+// and allocated it.
 Texture::~Texture(){
     if(pixelArray != NULL){
         cout << "Pixel Array being deleted! " << endl;

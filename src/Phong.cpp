@@ -19,6 +19,7 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
     double ka = object->ka;
     double kd = object->kd;
     double ks = object->ks;
+    // Get the objects color. Not trivial if using textures
     Color objectcolor = object->getColor(intersection);
     Color specular = object->speccolor;
     //specular.red = 1; specular.blue = 1; specular.green = 1;
@@ -26,6 +27,8 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
     blue = ka*objectcolor.blue;
     green = ka*objectcolor.green;
     for(int i = 0; i < lights.size(); i++){
+        // Get the normal vector from the intersection between this point
+        // and the object
         Vector N = object->normVector(&intersection);
 //        Vector N; // The surface normal vector at the intersection point
 //        vpmq(N, intersection, sphere.center); // N = intersection - sphere.center

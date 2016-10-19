@@ -4,11 +4,16 @@
 #include "Waxpby.hpp"
 
 #include <iostream>
+// Empty constructor
 Face::Face(){smooth = false;};
 
+// Constructor that takes three points and sets them as the
+// vertices of the face
 Face::Face(Point p_0, Point p_1, Point p_2):
     p0(p_0), p1(p_1), p2(p_2){smooth = false;};
 
+// Determines the t value where a ray may collide with this face
+// returns -1 if no collision
 double Face::collision(Ray r){
     Plane p(*this);
     Vector d = r.direction;
@@ -31,6 +36,8 @@ double Face::collision(Ray r){
         return -1.0;
 };
 
+// Calculates the surface norm at a given point
+// Assumes that the point is withing the triangle already.
 Vector Face::normVector(Point* collision){
     Vector n;
     if(!smooth){
@@ -44,31 +51,8 @@ Vector Face::normVector(Point* collision){
     else{
         double faceArea;
         Point intersect = *collision;
-        Vector e1;
-        vpmq(e1, p1, p0);
-        Vector e2;
-        vpmq(e2, p2, p0);
-        Vector cp;
-        crossProduct(cp, e1, e2);
-        faceArea = norm(cp)/2;
-        double a; // Area of triangle created from i, p1 and p2
-        vpmq(e1, intersect, p1);
-        vpmq(e2, intersect, p2);
-        crossProduct(cp, e1, e2);
-        a = norm(cp)/2;
-        a = a/faceArea;
-        double b; // Area of triangle created from i, p0 and p2
-        vpmq(e1, intersect, p0);
-        vpmq(e2, intersect, p2);
-        crossProduct(cp, e1, e2);
-        b = norm(cp)/2;
-        b = b/faceArea;
-        double c; // Area pf triangle created from i, p0 and p1
-        vpmq(e1, intersect, p0);
-        vpmq(e2, intersect, p1);
-        crossProduct(cp, e1, e2);
-        c = norm(cp)/2;
-        c = c/faceArea;
+        double a, b, c;
+        barycentricCord(intersect, a, b,c);
         waxpby(n, a, np0, b, np1);
         waxpby(n, 1, n, c, np2);
         normalize(n);
@@ -76,6 +60,10 @@ Vector Face::normVector(Point* collision){
     return n;
 }
 
+// Finds the base color of this face at the given point
+// Assumes that the point is within the triangle.
+// Returns color if not textured.
+// Finds the appropriate color from the texture if textured
 Color Face::getColor(Point p){
     if(!textured)
         return color;
@@ -91,6 +79,8 @@ Color Face::getColor(Point p){
     }
 };
 
+// Given a point p, sets a b and c to its respective barycentric
+// coordinates alpha, beta and gamma
 void Face::barycentricCord(Point p, double& a, double& b, double& c){
     double faceArea;
     // Calculate the area of the whole triangle

@@ -1,7 +1,7 @@
-My image shows 10 spheres with nine of them lined up in a 3x3 square with a 
-smaller sphere hovering over the top and casting a shadow from a positional
-light close to it. There is another directional light coming from the same
-direction as the viewing direction. The smaller sphere hovering over the top
-demonstrates how increasing the power value will shrink the white reflective
-circle caused by the specular term. The bottom right sphere demonstrates what
-happens when you change the specular color on the sphere. 
+My image shows a mixture of spheres and triangles. The middle square shows
+both a textured and non textured flat shaded triangles. The outside squares
+show the same things but what happens if you apply smooth shading with given
+vector norms. The set of textured balls shows textures being applied to spheres
+as well as demonstrating that shadows are cast upon triangles. The inner set
+of solid colored spheres are there to show that shadows still work from spheres
+and the bottom most sphere shows that triangles also cast shadows.

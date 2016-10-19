@@ -241,7 +241,9 @@ int main(int argc, char** argv){
     vector<Texture*> textures = inputdata.textures;
     for(int i = 0; i < textures.size(); i++)
         delete(textures[i]);
-
+// This section below is available by defining TEST_ENV in the CMake files
+// It is meant to be a sandbox environment to mess with new features and
+// implementations.
 #else
     cout << "TEST ENV VARIABLE" << endl;
     Face f(Point(1, 1, 0), Point(0, 1, 1), Point(1, 0, 1));

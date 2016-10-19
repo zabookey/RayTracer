@@ -26,8 +26,16 @@ viewdir <dx> <dy> <dz>
 updir <dx> <dy> <dz>
 bkgcolor <red> <green> <blue>
 mtlcolor <red> <green> <blue> <specred> <specgreen> <specblue> <ka> <kd> <ks> <n>
+texture <texture_file_name>
 sphere <x> <y> <z> <radius>
 light <x> <y> <z> <w> <red> <green> <blue>
+v <x> <y> <z>
+vn <dx> <dy> <dz>
+vt <x> <y>
+f <v1>/<vt1>/<vn1> <v2>/<vt2>/<vn2> <v3>/<vt3>/<vn3>
+f <v1>/<vt1> <v2>/<vt2> <v3>/<vt3>
+f <v1>//<vn1> <v2>//<vn2> <v3>//<vn3>
+f <v1> <v2> <v3>
 
 Running:
 Run the file like so:

@@ -3,6 +3,8 @@
 #include "CrossProduct.hpp"
 #include "Vector.hpp"
 
+// Constructs a plane from a face.
+// This is the 2d plane that the face resides on
 Plane::Plane(Face f){
     Vector e1;
     vpmq(e1, f.p1, f.p0);
