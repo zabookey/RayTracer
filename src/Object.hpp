@@ -18,5 +18,6 @@ class Object{
         virtual double collision(Ray r)=0;
         virtual Vector normVector(Point* collision)=0; // Point* so null can be passed
         virtual Color getColor(Point p)=0; 
+        virtual void PrintObject();
 };
 #endif

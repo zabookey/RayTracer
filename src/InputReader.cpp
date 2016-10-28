@@ -890,7 +890,6 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     }
     bool norms_set = (vn1 != -1 && vn2 != -1 && vn3 != -1);
     if(norms_set){ // Check if vertex norms are set.
-        cout << "NORMS_SET" << endl;
         int nvn = data.vertexNorms.size();
         if(vn1 < 1 || vn1 > nvn || vn2 < 1 || vn2 > nvn || vn3 < 1 || vn3 > nvn){
            cout << "Face wants vertex norm that doesn't exist yet." << endl;
@@ -899,7 +898,6 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     } 
     bool texts_set = (vt1 != -1 && vt2 != -1 && vt3 != -1);
     if(texts_set){ // Check if vertex norms are set.
-        cout << "TEXTS_SET" << endl;
         int nvt = data.textureVertices.size();
         if(vt1 < 1 || vt1 > nvt|| vt2 < 1 || vt2 > nvt || vt3 < 1 || vt3 > nvt){
            cout << "Face wants texture vertex that doesn't exist yet." << endl;
@@ -911,7 +909,6 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     face->p1 = data.vertices[v2-1];
     face->p2 = data.vertices[v3-1];
     if(norms_set){
-        cout << "DEBUG INPUT READER" << endl;
         face->np0 = data.vertexNorms[vn1-1];
         face->np1 = data.vertexNorms[vn2-1];
         face->np2 = data.vertexNorms[vn3-1];

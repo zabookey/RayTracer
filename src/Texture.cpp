@@ -135,6 +135,7 @@ Texture::Texture(string filename, bool& success){
         pixelnum++;
     }
     inputFile.close();
+    this->filename = filename;
     success = true;
 }
 

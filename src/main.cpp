@@ -172,15 +172,24 @@ int main(int argc, char** argv){
     cout << "BKG Color: (" << inputdata.bkgcolor.red << " " << inputdata.bkgcolor.green << " " << inputdata.bkgcolor.blue << ")" << endl;
     cout << "Up direction: (" << inputdata.updir.dx << " " << inputdata.updir.dy << " " << inputdata.updir.dz << ")" << endl;
     cout << "View direction: (" << inputdata.viewdir.dx << " " << inputdata.viewdir.dy << " " << inputdata.viewdir.dz << ")" << endl;
-    cout << "Number of Spheres: " << inputdata.objects.size() << endl;
+    cout << "U Vector: (" << u.dx << " " << u.dy << " " << u.dz << ")" << endl;
+    cout << "V Vector: (" << v.dx << " " << v.dy << " " << v.dz << ")" << endl;
+    cout << "Height of viewing window: " << h << endl;
+    cout << "Width  of viewing window: " << w << endl;
+    cout << "Aspect: " << aspect << endl;
+    cout << "Upper Left:  (" << ul.x << " " << ul.y << " " << ul.z << ")" << endl;
+    cout << "Upper Right: (" << ur.x << " " << ur.y << " " << ur.z << ")" << endl;
+    cout << "Lower Left:  (" << ll.x << " " << ll.y << " " << ll.z << ")" << endl;
+    cout << "Lower Right: (" << lr.x << " " << lr.y << " " << lr.z << ")" << endl;
+    
+    cout << "Delta H: (" << deltaH.dx << " " << deltaH.dy << " " << deltaH.dz << ")" << endl;
+    cout << "Delta V: (" << deltaV.dx << " " << deltaV.dy << " " << deltaV.dz << ")" << endl;
+    cout << "Number of Objects: " << inputdata.objects.size() << endl;
+    cout << endl << endl << endl;
     for(int i = 0; i < inputdata.objects.size(); i++){
-        cout << "Sphere " << i << ":" << endl;
-        cout << "    " << "Color: (" << inputdata.objects[i]->color.red << " " << inputdata.objects[i]->color.green << " " << inputdata.objects[i]->color.blue << ")" << endl;
-        cout << "    " << "Specular Color: (" << inputdata.objects[i]->speccolor.red << " " << inputdata.objects[i]->speccolor.green << " " << inputdata.objects[i]->speccolor.blue << ")" << endl;
-        cout << "    " << "K Ambient:  " << inputdata.objects[i]->ka << endl;
-        cout << "    " << "K Diffuse:  " << inputdata.objects[i]->kd << endl;
-        cout << "    " << "K Specular: " << inputdata.objects[i]->ks << endl;
-        cout << "    " << "N Power:    " << inputdata.objects[i]->powerN << endl;
+        cout << "Object " << i << ":" << endl;
+        inputdata.objects[i]->PrintObject();
+        cout << endl << endl << endl;
     }
     cout << "Number of Lights: " << inputdata.lights.size() << endl;
     for(int i = 0; i < inputdata.lights.size(); i++){
@@ -197,18 +206,6 @@ int main(int argc, char** argv){
         cout << "(" << light.x << " " << light.y << " " << light.z << ")" << endl;
         cout << "    " << "Color: (" << light.color.red << " " << light.color.green << " " << light.color.blue << ")" << endl;
     }
-    cout << "U Vector: (" << u.dx << " " << u.dy << " " << u.dz << ")" << endl;
-    cout << "V Vector: (" << v.dx << " " << v.dy << " " << v.dz << ")" << endl;
-    cout << "Height of viewing window: " << h << endl;
-    cout << "Width  of viewing window: " << w << endl;
-    cout << "Aspect: " << aspect << endl;
-    cout << "Upper Left:  (" << ul.x << " " << ul.y << " " << ul.z << ")" << endl;
-    cout << "Upper Right: (" << ur.x << " " << ur.y << " " << ur.z << ")" << endl;
-    cout << "Lower Left:  (" << ll.x << " " << ll.y << " " << ll.z << ")" << endl;
-    cout << "Lower Right: (" << lr.x << " " << lr.y << " " << lr.z << ")" << endl;
-    
-    cout << "Delta H: (" << deltaH.dx << " " << deltaH.dy << " " << deltaH.dz << ")" << endl;
-    cout << "Delta V: (" << deltaV.dx << " " << deltaV.dy << " " << deltaV.dz << ")" << endl;
 #endif
     // Write to an output file!
     string outputfilename(inputfilename);

@@ -4,6 +4,7 @@
 #include "Waxpby.hpp"
 
 #include <iostream>
+using namespace std;
 // Empty constructor
 Face::Face(){smooth = false;};
 
@@ -110,4 +111,26 @@ void Face::barycentricCord(Point p, double& a, double& b, double& c){
     crossProduct(cp, e1, e2);
     c = norm(cp)/2;
     c = c/faceArea;
+};
+
+void Face::PrintObject(){
+    cout << "Object is a face/triangle" << endl;
+    cout << "P0: (" << p0.x << " " << p0.y << " " << p0.z << ")" << endl;
+    cout << "P1: (" << p1.x << " " << p1.y << " " << p1.z << ")" << endl;
+    cout << "P2: (" << p2.x << " " << p2.y << " " << p2.z << ")" << endl;
+    if(smooth){
+        cout << "Face is smooth" << endl;
+        cout << "    NP0: (" << np0.dx << " " << np0.dy << " " << np0.dz << ")" << endl;
+        cout << "    NP1: (" << np1.dx << " " << np1.dy << " " << np1.dz << ")" << endl;
+        cout << "    NP2: (" << np2.dx << " " << np2.dy << " " << np2.dz << ")" << endl;
+    } else {
+        cout << "Face is flat" << endl;
+    }
+    if(textured){
+        cout << "Texture Vertices: " << endl;
+        cout << "    TP0: (" << tp0.u << " " << tp0.v << ")" << endl;
+        cout << "    TP1: (" << tp1.u << " " << tp1.v << ")" << endl;
+        cout << "    TP2: (" << tp2.u << " " << tp2.v << ")" << endl;
+    }
+    Object::PrintObject();
 }

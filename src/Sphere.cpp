@@ -1,5 +1,8 @@
 #include "Sphere.hpp"
 
+#include <iostream>
+using namespace std;
+
 Sphere::Sphere(){};
 
 // Decides whether or not the input ray intersects the
@@ -54,3 +57,10 @@ Color Sphere::getColor(Point p){
         return t->pixelArray[i][j];
     }
 }
+
+void Sphere::PrintObject(){
+    cout << "Object is a sphere" << endl;
+    cout << "Origin: (" << center.x << " " << center.y << " " << center.z << ")" << endl;
+    cout << "Radius: " << radius << endl;
+    Object::PrintObject();
+};

@@ -25,6 +25,7 @@ class Face: public Object{
         double collision(Ray r);
         Vector normVector(Point* collision); // Use a pointer to allow passing null.
         Color getColor(Point p);
+        void PrintObject();
     private:
         void barycentricCord(Point p, double& a, double& b, double& c);
 };

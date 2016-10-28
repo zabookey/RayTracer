@@ -16,6 +16,7 @@ class Sphere: public Object{
         double collision(Ray r);
         Vector normVector(Point* collision);
         Color getColor(Point p);
+        void PrintObject();
 };
 
 #endif
