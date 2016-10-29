@@ -13,6 +13,7 @@
 #include "ValidityChecker.hpp"
 #include "Phong.hpp"
 #include "Texture.hpp"
+#include "RayPayload.hpp"
 
 #include <string>
 #include <iostream>
@@ -127,26 +128,29 @@ int main(int argc, char** argv){
             qppax(target, ul, pixelX, deltaH);
             qppax(target, target, pixelY, deltaV);
             // Create the ray from eye to target
-            Ray r;
-            initRay(r, eye, target);
+            Ray r(eye, target);
+//            initRay(r, eye, target);
             // Witchcraft to determine if the ray hits a object
             // Use pointer to determine which object is the current closest
-            Object * nearest = 0;
-            double nearestDist = DBL_MAX;
+//            Object * nearest = 0;
+//            double nearestDist = DBL_MAX;
             // Cycle through the objects and determine the collision
             // Determine how far the ray travels for the collision
-            for(int i = 0; i < objects.size(); i++){
-                double t = objects[i]->collision(r);
+//            for(int i = 0; i < objects.size(); i++){
+//                double t = objects[i]->collision(r);
                 //double t = sphereCollision(r, objects[i]);
-                if(t >= 0){
+//                if(t >= 0){
                     // If this t is closer than the previous t
                     // change the nearestDist and and point to this object
-                    if(t < nearestDist){
-                        nearestDist = t;
-                        nearest = objects[i];
-                    }
-                }
-            }
+//                    if(t < nearestDist){
+//                        nearestDist = t;
+//                        nearest = objects[i];
+//                    }
+//                }
+//            }
+            RayPayload rp = traceRay(r, objects);
+            double nearestDist = rp.nearestDist;
+            Object* nearest = rp.nearest;
             // Check if a object was hit. If so color it with object color
             // If not color pixel with bkgcolor
             if(nearestDist != DBL_MAX){

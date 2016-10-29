@@ -2,13 +2,14 @@ set(SOURCES
     InputReader.cpp Waxpby.cpp CrossProduct.cpp Norm.cpp Normalize.cpp
     Qppax.cpp Vpmq.cpp SphereCollision.cpp ValidityChecker.cpp DotProduct.cpp
     Phong.cpp Vector.cpp Point.cpp Object.cpp Face.cpp Plane.cpp Sphere.cpp Texture.cpp
+    Ray.cpp RayPayload.cpp
     )
 
 set(HEADERS
     Point.hpp Vector.hpp Color.hpp Sphere.hpp InputData.hpp InputReader.hpp
     Ray.hpp Waxpby.hpp CrossProduct.hpp Norm.hpp Normalize.hpp Qppax.hpp
     Vpmq.hpp SphereCollision.hpp ValidityChecker.hpp Light.hpp DotProduct.hpp
-    Phong.hpp Face.hpp Plane.hpp Object.hpp Texture.hpp
+    Phong.hpp Face.hpp Plane.hpp Object.hpp Texture.hpp RayPayload.hpp
     )
 
 add_library(raytracerlib ${SOURCES} ${HEADERS})

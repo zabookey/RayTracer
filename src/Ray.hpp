@@ -6,12 +6,13 @@
 #include "Vpmq.hpp"
 #include "Normalize.hpp"
 
-struct Ray_Struct{
+class Ray{
+    public:
     Point origin;
     Vector direction;
+    Ray();
+    Ray(Point src, Point dest);
 };
-
-typedef struct Ray_Struct Ray;
 
 inline void initRay(Ray& r, Point src, Point dest){
     copyPoint(src, r.origin);
