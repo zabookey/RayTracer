@@ -29,6 +29,8 @@ int readInputFile(string filename, InputData& data){
     double kSpecular = 0;
     int powerN = 0;
 
+    double f0 = 0;
+
     string line;
     string delimiter = " ";
     int linenum = 0;
@@ -67,18 +69,18 @@ int readInputFile(string filename, InputData& data){
             viewdirUsed = true;
         } else if(keyword.compare("mtlcolor") == 0){
             error = !process_mtlcolor(line, delimiter, mtlcolor, speccolor,
-                    kAmbient, kDiffuse, kSpecular, powerN);
+                    kAmbient, kDiffuse, kSpecular, powerN, f0);
             textured = false;
         } else if(keyword.compare("sphere") == 0){
             error = !process_sphere(line, delimiter, data, mtlcolor, speccolor,
-                    kAmbient, kDiffuse, kSpecular, powerN, textured);
+                    kAmbient, kDiffuse, kSpecular, powerN, f0, textured);
         } else if(keyword.compare("light") == 0){
             error = !process_light(line, delimiter, data);
         } else if(keyword.compare("v") == 0){
             error = !process_vertex(line, delimiter, data);
         } else if(keyword.compare("f") == 0){
             error = !process_face(line, delimiter, data, mtlcolor, speccolor,
-                    kAmbient, kDiffuse, kSpecular, powerN, textured);
+                    kAmbient, kDiffuse, kSpecular, powerN, f0, textured);
         } else if(keyword.compare("vn") == 0){
             error = !process_vertexNormal(line, delimiter, data);
         } else if(keyword.compare("texture") == 0){
@@ -347,7 +349,7 @@ bool process_viewdir(string line, string delimiter, InputData& data){
 // This will be stored so any objects created will be this color
 bool process_mtlcolor(string line, string delimiter, Color& mtlcolor, 
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN){
+        int& powerN, double& f0){
     double red;
     double green;
     double blue;
@@ -452,6 +454,7 @@ bool process_mtlcolor(string line, string delimiter, Color& mtlcolor,
 
     double ka, kd, ks;
     int n;
+    double f_0;
 
     pos = line.find(delimiter);
     if(pos == string::npos){
@@ -500,17 +503,33 @@ bool process_mtlcolor(string line, string delimiter, Color& mtlcolor,
         return false;
     }
     line.erase(0, pos+delimiter.length());
+    
+    pos = line.find(delimiter);
+    if(pos == string::npos){
+        return false;
+    }
+    token = line.substr(0,pos);
+    try{
+        n = stoi(token,NULL);
+        if(n < 0){
+            cout << "n value out of range" << endl;
+            return false;
+        }
+    } catch (invalid_argument& e){
+        return false;
+    }
+    line.erase(0, pos+delimiter.length());
 
     pos = line.find(delimiter);
     try{
         if(pos == string::npos){
-            n = stoi(line, NULL);
+            f_0 = stod(line, NULL);
         } else {
             token = line.substr(0, pos);
-            n = stoi(token, NULL);
+            f_0 = stod(token, NULL);
         }
-        if(n < 0){
-            cout << "n value out of range" << endl;
+        if(f_0 < 0 || f_0 > 1){
+            cout << "f0 value out of range" << endl;
             return false;
         }
     } catch (invalid_argument& e){
@@ -521,6 +540,8 @@ bool process_mtlcolor(string line, string delimiter, Color& mtlcolor,
     kSpecular = ks;
     powerN = n;
 
+    f0 = f_0;
+
     return true;
 }
 
@@ -528,7 +549,7 @@ bool process_mtlcolor(string line, string delimiter, Color& mtlcolor,
 // Adds a sphere created by the information in this line to the vector
 bool process_sphere(string line, string delimiter, InputData& data, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN, bool textured){
+        int& powerN, double& f0, bool textured){
     double x;
     double y;
     double z;
@@ -602,6 +623,7 @@ bool process_sphere(string line, string delimiter, InputData& data, Color& mtlco
     sphere->kd = kDiffuse;
     sphere->ks = kSpecular;
     sphere->powerN = powerN;
+    sphere->f0 = f0;
     data.objects.push_back(sphere);
     return true;
 }
@@ -756,7 +778,7 @@ bool process_vertex(string line, string delimiter, InputData& data){
 // Adds the face to the face array
 bool process_face(string line, string delimiter, InputData& data, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN, bool textured){
+        int& powerN, double& f0, bool textured){
     int v1, v2, v3;
     int vn1 = -1, vn2 = -1, vn3 = -1;
     int vt1 = -1, vt2 = -1, vt3 = -1;
@@ -932,6 +954,7 @@ bool process_face(string line, string delimiter, InputData& data, Color& mtlcolo
     face->kd = kDiffuse;
     face->ks = kSpecular;
     face->powerN = powerN;
+    face->f0 = f0;
     data.objects.push_back(face);
     return true;
 }

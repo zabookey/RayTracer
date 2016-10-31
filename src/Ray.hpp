@@ -12,6 +12,7 @@ class Ray{
     Vector direction;
     Ray();
     Ray(Point src, Point dest);
+    Ray(Point origin_, Vector direction_);
 };
 
 inline void initRay(Ray& r, Point src, Point dest){

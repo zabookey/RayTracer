@@ -11,8 +11,10 @@ Texture::Texture(){};
 // Constructor that reads a .ppm file and saves the image in it's pixelArray
 // Assumes the ppm image has a one line header.
 Texture::Texture(string filename, bool& success){
-    ifstream inputFile(filename);
+    ifstream inputFile(filename.c_str());
+    cout << filename << endl;
     if(!inputFile){
+        cout << "File: " << filename << " could not be opened" << endl;
         success = false;
         return;
     }

@@ -1,4 +1,7 @@
 #include "Phong.hpp"
+#include "RayPayload.hpp"
+#include "Qppax.hpp"
+
 #include <iostream>
 
 /* Uses the phong illumination model to determine what color the pixel
@@ -14,7 +17,7 @@
  *     Returns the color calculated by the phong model.
  */
 Color phong(Point intersection, Object* object, vector<Light> lights,
-        vector<Object*> objects, Vector viewdir, int npower){
+        vector<Object*> objects, Vector viewdir, int n){
     double red, blue, green;
     double ka = object->ka;
     double kd = object->kd;
@@ -26,10 +29,13 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
     red = ka*objectcolor.red;
     blue = ka*objectcolor.blue;
     green = ka*objectcolor.green;
+    Vector V; // Initiate the vector pointing towards the veiwer
+    copyVector(viewdir, V); // Copy V with the view direction. Assume V is already normalized...
+    scaleVector(V, -1); // Reverse the direction of V
+    // Get the normal vector from the intersection between this point
+    // and the object
+    Vector N = object->normVector(&intersection);
     for(int i = 0; i < lights.size(); i++){
-        // Get the normal vector from the intersection between this point
-        // and the object
-        Vector N = object->normVector(&intersection);
 //        Vector N; // The surface normal vector at the intersection point
 //        vpmq(N, intersection, sphere.center); // N = intersection - sphere.center
 //        scaleVector(N, 1/sphere.radius); // Normalize N by dividing sphere redius
@@ -66,9 +72,6 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
                 shadowlessFlag = false;
             }
         }
-        Vector V; // Initiate the vector pointing towards the veiwer
-        copyVector(viewdir, V); // Copy V with the view direction
-        scaleVector(V, -1); // Reverse the direction of V
         Vector H; // Initialize the Halfway vector
         waxpby(H, 1.0, L, 1.0, V); // H = L + V
         normalize(H); // H = H / ||H||
@@ -84,12 +87,41 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
             green += light.color.green*(kd*objectcolor.green*NdotL + ks*specular.green*NdotH);
         }
     }
-//    if(red > 1)
-//        red = 1;
-//    if(blue > 1)
-//        blue = 1;
-//    if(green > 1)
-//        green = 1;
+    // Reflection calculations:
+    // Calculate the reflection ray reflect.
+    if(n > 0){
+        Vector r;
+        copyVector(N, r);
+        double  a = dotProduct(N, V);
+//        if(a > 1 || a < 0){
+//            std::cout << "ERROR" << endl;
+//            std::cout << "a: " << a << endl;
+//            std::cout << "N: (" << N.dx << " " << N.dy << " " << N.dz << ")" << endl;
+//            std::cout << "V: (" << V.dx << " " << V.dy << " " << V.dz << ")" << endl;
+//        } else {
+        waxpby(r, 2*a, r, -1, V);
+        normalize(r); // Just to be safe...
+        Ray reflection(intersection, r);
+        RayPayload rp = traceRay(reflection, objects);
+        if(rp.nearestDist < DBL_MAX && rp.nearestDist > 1e-3){
+            Point refcol;
+            qppax(refcol, reflection.origin, rp.nearestDist, reflection.direction);
+            Color reflectColor = phong(refcol, rp.nearest, lights, objects, r, n-1);
+            // f0 should be the part of the object...
+            double f0 = object->f0;
+            double fr = f0 + (1-f0)*pow((1-a), 5);
+            red += fr*reflectColor.red;
+            green += fr*reflectColor.green;
+            blue += fr*reflectColor.blue;
+        }
+//        }
+    }
+    if(red > 1)
+        red = 1;
+    if(blue > 1)
+        blue = 1;
+    if(green > 1)
+        green = 1;
 //    if(red < 0)
 //        red = 0;
 //    if(blue < 0)
