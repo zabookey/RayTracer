@@ -9,7 +9,7 @@ RayPayload traceRay(Ray& r, vector<Object*> objects){
     int numberObjects = objects.size();
     for(int i = 0; i < numberObjects; i++){
         double t = objects[i]->collision(r);
-        if(t >= 0 && t < nearestDist){
+        if(t >= 1e-3 && t < nearestDist){
             nearestDist = t;
             nearest = objects[i];
         }
