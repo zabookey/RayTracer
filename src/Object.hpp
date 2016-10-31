@@ -13,7 +13,7 @@ class Object{
         Color speccolor;
         double ka, kd, ks;
         int powerN;
-        double f0;
+        double nt, ni;
         bool textured = false;
         Texture* texture = NULL;
         virtual double collision(Ray r)=0;

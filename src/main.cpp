@@ -156,7 +156,7 @@ int main(int argc, char** argv){
             if(nearestDist != DBL_MAX){
                 Point intersection;
                 qppax(intersection, r.origin, nearestDist, r.direction);
-                Color c = phong(intersection, nearest, inputdata.lights, objects, r.direction, 5);
+                Color c = phong(intersection, nearest, inputdata.lights, objects, r.direction, 1);
                 if(c.red < 0 || c.blue < 0 || c.green < 0){
                     cout << "NEGATIVE COLOR VALUE AT [" << pixelX << "][" << pixelY << "]" << endl;
                 }

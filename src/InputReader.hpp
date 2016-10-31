@@ -31,11 +31,11 @@ bool process_viewdir(std::string line, std::string delimiter, InputData& data);
 
 bool process_mtlcolor(std::string line, std::string delimiter, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN, double& f0);
+        int& powerN, double& nt, double& ni);
 
 bool process_sphere(std::string line, std::string delimiter, InputData& data, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN, double& f0, bool textured);
+        int& powerN, double& nt, double& ni, bool textured);
 
 bool process_light(std::string line, std::string delimiter, InputData& data);
 
@@ -43,7 +43,7 @@ bool process_vertex(std::string line, std::string delimiter, InputData& data);
 
 bool process_face(std::string line, std::string delimiter, InputData& data, Color& mtlcolor,
         Color& speccolor, double& kAmbient, double& kDiffuse, double& kSpecular,
-        int& powerN, double& f0, bool textured);
+        int& powerN, double& nt, double& ni, bool textured);
 
 bool process_vertexNormal(std::string line, std::string delimiter, InputData& data);
 

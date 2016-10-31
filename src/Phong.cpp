@@ -93,13 +93,13 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
         Vector r;
         copyVector(N, r);
         double  a = dotProduct(N, V);
-//        if(a > 1 || a < 0){
+        if(a > 1 || a < 0){
 //            std::cout << "ERROR" << endl;
 //            std::cout << "a: " << a << endl;
 //            std::cout << "N: (" << N.dx << " " << N.dy << " " << N.dz << ")" << endl;
 //            std::cout << "V: (" << V.dx << " " << V.dy << " " << V.dz << ")" << endl;
-//        } else {
-        waxpby(r, 2*a, r, -1, V);
+        } else {
+        waxpby(r, 2*a, N, -1, V);
         normalize(r); // Just to be safe...
         Ray reflection(intersection, r);
         RayPayload rp = traceRay(reflection, objects);
@@ -108,13 +108,15 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
             qppax(refcol, reflection.origin, rp.nearestDist, reflection.direction);
             Color reflectColor = phong(refcol, rp.nearest, lights, objects, r, n-1);
             // f0 should be the part of the object...
-            double f0 = object->f0;
+            double nt = object->nt;
+            double ni = object->ni;
+            double f0 = pow((nt-ni)/(nt+ni),2);
             double fr = f0 + (1-f0)*pow((1-a), 5);
             red += fr*reflectColor.red;
             green += fr*reflectColor.green;
             blue += fr*reflectColor.blue;
         }
-//        }
+        }
     }
     if(red > 1)
         red = 1;
