@@ -17,7 +17,7 @@
  *     Returns the color calculated by the phong model.
  */
 Color phong(Point intersection, Object* object, vector<Light> lights,
-        vector<Object*> objects, Vector viewdir, int n){
+        vector<Object*> objects, Vector viewdir, double rayrefrac, int n){
     double red, blue, green;
     double ka = object->ka;
     double kd = object->kd;
@@ -87,18 +87,24 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
             green += light.color.green*(kd*objectcolor.green*NdotL + ks*specular.green*NdotH);
         }
     }
+    // Use a depth check to prevent infinite loops with reflection and refraction
+    if(n > 0){
     // Reflection calculations:
     // Calculate the reflection ray reflect.
-    if(n > 0){
+        // f0 should be the part of the object...
+        double opac = object->opac;
+        double refrac = object->refrac;
+        double f0 = pow((refrac-rayrefrac)/(refrac+rayrefrac),2);
         Vector r;
         copyVector(N, r);
         double  a = dotProduct(N, V);
-        if(a > 1 || a < 0){
+        double fr = f0 + (1-f0)*pow((1-a), 5);
+//        if(a > 1 || a < 0){
 //            std::cout << "ERROR" << endl;
 //            std::cout << "a: " << a << endl;
 //            std::cout << "N: (" << N.dx << " " << N.dy << " " << N.dz << ")" << endl;
 //            std::cout << "V: (" << V.dx << " " << V.dy << " " << V.dz << ")" << endl;
-        } else {
+//        } else {
         waxpby(r, 2*a, N, -1, V);
         normalize(r); // Just to be safe...
         Ray reflection(intersection, r);
@@ -106,16 +112,33 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
         if(rp.nearestDist < DBL_MAX && rp.nearestDist > 1e-3){
             Point refcol;
             qppax(refcol, reflection.origin, rp.nearestDist, reflection.direction);
-            Color reflectColor = phong(refcol, rp.nearest, lights, objects, r, n-1);
-            // f0 should be the part of the object...
-            double nt = object->nt;
-            double ni = object->ni;
-            double f0 = pow((nt-ni)/(nt+ni),2);
-            double fr = f0 + (1-f0)*pow((1-a), 5);
+            Color reflectColor = phong(refcol, rp.nearest, lights, objects, r, rayrefrac, n-1);
             red += fr*reflectColor.red;
             green += fr*reflectColor.green;
             blue += fr*reflectColor.blue;
         }
+//        }
+
+        // Transparency Calculations:
+        if(opac != 1){ // No point in even doing this if this is 1.
+            Vector t;
+            double alpha = -sqrt(1-pow((rayrefrac/refrac),2)*(1-pow(a,2)));
+            double beta = (rayrefrac/refrac);
+            Vector y;
+            waxpby(y, a, N, -1, V);
+            waxpby(t, alpha, N, beta, y);
+            normalize(t); // Just to be safe...
+            Ray transparent(intersection, t);
+            RayPayload rp = traceRay(transparent, objects);
+            if(rp.nearestDist < DBL_MAX && rp.nearestDist > 1e-3){
+                Point transcol;
+                qppax(transcol, transparent.origin, rp.nearestDist, transparent.direction);
+                Color transColor = phong(transcol, rp.nearest, lights, objects, t, 1, n);
+                double transScale = (1-fr)*(1-opac);
+                red += transScale*transColor.red;
+                green += transScale*transColor.green;
+                blue += transScale*transColor.blue;
+            }
         }
     }
     if(red > 1)

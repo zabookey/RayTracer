@@ -19,6 +19,6 @@
 using namespace std;
 
 Color phong(Point intersection, Object* object, vector<Light> lights,
-        vector<Object*> objects, Vector viewdir, int npower);
+        vector<Object*> objects, Vector viewdir, double rayrefrac, int npower);
 
 #endif

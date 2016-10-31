@@ -156,7 +156,7 @@ int main(int argc, char** argv){
             if(nearestDist != DBL_MAX){
                 Point intersection;
                 qppax(intersection, r.origin, nearestDist, r.direction);
-                Color c = phong(intersection, nearest, inputdata.lights, objects, r.direction, 1);
+                Color c = phong(intersection, nearest, inputdata.lights, objects, r.direction, 1, 2);
                 if(c.red < 0 || c.blue < 0 || c.green < 0){
                     cout << "NEGATIVE COLOR VALUE AT [" << pixelX << "][" << pixelY << "]" << endl;
                 }
@@ -247,34 +247,23 @@ int main(int argc, char** argv){
 // implementations.
 #else
     cout << "TEST ENV VARIABLE" << endl;
-    Face f(Point(1, 1, 0), Point(0, 1, 1), Point(1, 0, 1));
-    Vector normalV = f.normVector(NULL);
-    cout << "NormalVector: (" << normalV.dx << " " << normalV.dy << " " << normalV.dz << ")" << endl;
-    Ray r;
-    initRay(r, Point(0, 0, 0), Point(-1.0/3, -2.0/3, -2.0/3));
-    cout << "Ray Collision with Face at t = " << f.collision(r) << endl;
-    bool success = false;
-    Texture t("Masterpiece.ppm", success);
-    if(!success){
-        cout << "Error in Texture constructor" << endl;
-        return 1;
-    }
-    else
-        cout << "Texture read properly!" << endl;
-
-    ofstream outputFile;
-    outputFile.open("CopyPicture.ppm");
-    outputFile << "P3 ";
-    outputFile << t.width << " " << t.height << " ";
-    outputFile << 255 << "\n";
-    for(int i = 0; i < t.height; i++){
-        for(int j = 0; j < t.width; j++){
-            Color color = t.pixelArray[j][i];
-            outputFile << static_cast <int> (floor(color.red * 255)) << " ";
-            outputFile << static_cast <int> (floor(color.green * 255)) << " ";
-            outputFile << static_cast <int> (floor(color.blue * 255)) << "\n";
-        }
-    }
-    outputFile.close();
+    Point p1(2,3,5);
+    Point p2(3,-1,-3);
+    double ni = 1.0;
+    double nt = 1.2;
+    Vector surfNorm(0, 1, 0);
+    Vector I;
+    vpmq(I, p1, p2);
+    normalize(I);
+//    scaleVector(I, -1);
+    Vector t;
+    double a = dotProduct(I, surfNorm);
+    cout << "a: " << a << endl;
+    double alpha = -sqrt(1-pow((ni/nt),2)*(1-pow(a,2)));
+    double beta = ni/nt;
+    Vector y;
+    waxpby(y, a, surfNorm, -1, I);
+    waxpby(t, alpha, surfNorm, beta, y);
+    cout << "T: (" << t.dx << " " << t.dy << " " << t.dz << ")" << endl;
 #endif
 }
