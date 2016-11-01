@@ -25,7 +25,7 @@ fovv <angle>
 viewdir <dx> <dy> <dz>
 updir <dx> <dy> <dz>
 bkgcolor <red> <green> <blue>
-mtlcolor <red> <green> <blue> <specred> <specgreen> <specblue> <ka> <kd> <ks> <n>
+mtlcolor <red> <green> <blue> <specred> <specgreen> <specblue> <ka> <kd> <ks> <n> <opac> <refrac>
 texture <texture_file_name>
 sphere <x> <y> <z> <radius>
 light <x> <y> <z> <w> <red> <green> <blue>
