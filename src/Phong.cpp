@@ -59,7 +59,7 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
             normalize(L); // Normalize L vector
         }
         // Check to see if another object in the scene is blocking this light
-        bool shadowlessFlag = true; // Assume that we aren't in a shadow
+        double shadowlessFlag = 1.0; // Assume that we aren't in a shadow
         for(int j = 0; j < objects.size(); j++){
             Ray r; // Initiate a Ray from the intersection in the direction of the light source
             r.origin = intersection;
@@ -69,7 +69,7 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
 //            cout << "    Shadow T: " << t << endl;
             // If there is a collision set the shadowlessFlag to false
             if(t >= 1e-4 && t < distanceToLight){
-                shadowlessFlag = false;
+                shadowlessFlag -= objects[j]->opac;
             }
         }
         Vector H; // Initialize the Halfway vector
@@ -81,10 +81,10 @@ Color phong(Point intersection, Object* object, vector<Light> lights,
         if(NdotL < 0) NdotL = 0; // make sure NdotL is >= 0.
         if(NdotH < 0) NdotH = 0; // make sure NdotH is >= 0.
         // If this point is not in the shadow of another object. Add this lights contribution to the phong model
-        if(shadowlessFlag){
-            red += light.color.red*(kd*objectcolor.red*NdotL + ks*specular.red*NdotH);
-            blue += light.color.blue*(kd*objectcolor.blue*NdotL + ks*specular.blue*NdotH);
-            green += light.color.green*(kd*objectcolor.green*NdotL + ks*specular.green*NdotH);
+        if(shadowlessFlag > 0){
+            red += shadowlessFlag*(light.color.red*(kd*objectcolor.red*NdotL + ks*specular.red*NdotH));
+            blue += shadowlessFlag*(light.color.blue*(kd*objectcolor.blue*NdotL + ks*specular.blue*NdotH));
+            green += shadowlessFlag*(light.color.green*(kd*objectcolor.green*NdotL + ks*specular.green*NdotH));
         }
     }
     // Use a depth check to prevent infinite loops with reflection and refraction
